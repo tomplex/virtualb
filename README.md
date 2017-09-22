@@ -49,24 +49,8 @@ Currently, `virtualb` provides six commands:
 |command|description|usage|
 |---|---|---|
 | `activate` | activate the specified virtualenv | `vb activate <virtualenv>` |
-
-`deactivate` - deactivate the currently activated virtualenv.
-
-Usage: `vb deactivate`
-
-`ls` - list all virtualenvs by name
-
-Usage: `vb ls`
-
-`new` - create a new virtualenv with the specified name
-
-Usage: `vb new <virtualenv> [options]`  
-Where options can be any valid [virtualenv](https://virtualenv.pypa.io/en/latest/) options.
-
-`rm` - deletes the specified virtualenv
-
-Usage: `vb rm <virtualenv>`
-
-`which` - shows the currently activated virtualenv
-
-Usage: `vb which`
+|`deactivate`| deactivate the currently activated virtualenv.|`vb deactivate`|
+|`ls`|list all virtualenvs by name|`vb ls`|
+|`new`|create a new virtualenv with the specified name|`vb new <virtualenv> [options]`| 
+|`rm` | deletes the specified virtualenv| `vb rm <virtualenv>`|
+|`which`|shows the currently activated virtualenv|`vb which`
