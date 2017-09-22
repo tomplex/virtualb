@@ -132,3 +132,31 @@ __install_deps () {
 
     [[ $INSTALL =~ [Yy] ]] && sudo pip install virtualenv
 }
+
+
+__vb_completions() {
+    [[ $1 == "activate" || $1 == "rm" ]] && __virtualb_ls
+}
+
+
+_vb () {
+
+  COMPREPLY=()
+
+  local word="${COMP_WORDS[COMP_CWORD]}"
+
+  if [[ "${COMP_CWORD}" -eq 1 ]]; then
+
+    COMPREPLY=( $(compgen -W "activate deactivate ls new rm which" -- "$word") )
+
+  else
+    local words=("${COMP_WORDS[@]}")
+    unset words[0]
+    unset words[$COMP_CWORD]
+    local completions=$(__vb_completions "${words[@]}")
+    COMPREPLY=( $(compgen -W "$completions" -- "$word") )
+  fi
+}
+
+
+complete -F _vb vb
