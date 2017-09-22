@@ -7,23 +7,23 @@ A bash wrapper around Python's `virtualenv` tool. Inspired by [virtualz](https:/
 `virtualb` provides the `vb` command, which groups together some useful virtualenv management tasks:
 
 ```bash
-vb new some_virtualenv        # defaults to system python
+vb new some_virtualenv          # defaults to system python
 which python
-vb which                      # show virtualenv name
+vb which                        # show virtualenv name
  
 vb new some_other_virtualenv -p python3.6  # can specify python to use
 which python
 vb which
  
-echo ${VIRTUAL_ENV}           # path to virtualenv
-echo ${VIRTUAL_ENV_NAME}      # name of virtualenv
+echo ${VIRTUAL_ENV}             # path to virtualenv
+echo ${VIRTUAL_ENV_NAME}        # name of virtualenv
  
-vb deactivate
+vb deactivate                   # deactivates current virtualenv
 which python
  
-vb ls                         # lists all virtualenvs
+vb ls                           # lists all virtualenvs
  
-vb rm some_virtualenv         # removes virtualenv
+vb rm some_virtualenv           # removes virtualenv
 vb rm some_other_virtualenv
 ```
 
