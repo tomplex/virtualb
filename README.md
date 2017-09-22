@@ -1,6 +1,6 @@
 ## virtualb
 
-A bash wrapper around Python's `virtualenv` tool. Inspired by [virtualz](https://github.com/aperezdc/virtualz), it aims to pull all virtualenv management into one place, with explicit and easy to remember subcommands.
+A bash wrapper around Python's `virtualenv` tool. Inspired by [virtualz](https://github.com/aperezdc/virtualz), it aims to pull all virtualenv management into one command, with explicit and easy to remember subcommands.
 
 ### Usage
 
@@ -46,9 +46,9 @@ I haven't yet figured out how integrate with a plugin manager like [bash-it](htt
 
 Currently, `virtualb` provides six commands:
 
-`activate` - activate the specified virtualenv.
-  
-Usage: `vb activate <virtualenv>`
+|command|description|usage|
+|---|---|---|
+| `activate` | activate the specified virtualenv | `vb activate <virtualenv>` |
 
 `deactivate` - deactivate the currently activated virtualenv.
 
