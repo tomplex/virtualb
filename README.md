@@ -35,6 +35,7 @@ Currently, `virtualb` provides six commands:
 |---|---|---|
 | `activate` | activate the specified virtualenv | `vb activate <virtualenv>` |
 |`deactivate`| deactivate the currently activated virtualenv.|`vb deactivate`|
+|`freeze`|list installed packages in currently activated or specified virtualenv| `vb freeze` or `vb freeze <virtualenv>`|
 |`ls`|list all virtualenvs by name|`vb ls`|
 |`new`|create a new virtualenv with the specified name|`vb new <virtualenv> [options]`| 
 |`rm` | deletes the specified virtualenv| `vb rm <virtualenv>`|
