@@ -29,7 +29,7 @@ vb rm some_other_virtualenv
 
 All virtualenvs are created in the location specified environment variable `VIRTUALB_HOME`. It defaults to `~/.virtualenvs`, but you can set this to whatever in your `.bashrc` file (no need to export).
 
-Currently, `virtualb` provides six commands:
+Currently, `virtualb` provides these commands:
 
 |command|description|usage|
 |---|---|---|
