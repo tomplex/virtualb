@@ -29,7 +29,20 @@ vb rm some_other_virtualenv
 
 All virtualenvs are created in the location specified environment variable `VIRTUALB_HOME`. It defaults to `~/.virtualenvs`, but you can set this to whatever in your `.bashrc` file (no need to export).
 
-Additionally, all arguments passed to the `vb new` subcommand will be passed along to the `virtualenv` command, but they must come *after* the name of the virtualenv.
+#### Commands
+
+Currently, `virtualb` provides six commands:
+
+|command|description|usage|
+|---|---|---|
+| `activate` | activate the specified virtualenv | `vb activate <virtualenv>` |
+|`deactivate`| deactivate the currently activated virtualenv.|`vb deactivate`|
+|`ls`|list all virtualenvs by name|`vb ls`|
+|`new`|create a new virtualenv with the specified name|`vb new <virtualenv> [options]`| 
+|`rm` | deletes the specified virtualenv| `vb rm <virtualenv>`|
+|`which`|shows the currently activated virtualenv|`vb which`|
+
+Additionally, all arguments to the `vb new` subcommand will be passed along to the `virtualenv` command, but they must come *after* the name of the virtualenv.
 
 ### Installation
 
@@ -42,15 +55,3 @@ echo "source $HOME/.bash_plugins/virtualb/virtualb.plugin.bash" >> ~/.bashrc
 
 I haven't yet figured out how integrate with a plugin manager like [bash-it](https://github.com/Bash-it/bash-it). Will update once I get that set up.
 
-### Commands
-
-Currently, `virtualb` provides six commands:
-
-|command|description|usage|
-|---|---|---|
-| `activate` | activate the specified virtualenv | `vb activate <virtualenv>` |
-|`deactivate`| deactivate the currently activated virtualenv.|`vb deactivate`|
-|`ls`|list all virtualenvs by name|`vb ls`|
-|`new`|create a new virtualenv with the specified name|`vb new <virtualenv> [options]`| 
-|`rm` | deletes the specified virtualenv| `vb rm <virtualenv>`|
-|`which`|shows the currently activated virtualenv|`vb which`
