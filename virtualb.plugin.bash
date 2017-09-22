@@ -46,6 +46,7 @@ Available commands:
 
     activate    -  Activate a virtualenv
     deactivate  -  Deactivate the current virtualenv
+    freeze      -  List installed packages in current or specified virtualenv
     ls          -  List all virtualenvs
     new         -  Create a new virtualenv
     rm          -  Remove a virtualenv
@@ -126,6 +127,15 @@ __virtualb_which () {
 }
 
 
+__virtualb_freeze () {
+    [[ -z ${VIRTUAL_ENV+x} && $# -lt 1 ]] && echo "No virtualenv specified or active." 1>&2 && return 1
+    
+    local env=${1:-${VIRTUAL_ENV_NAME}}
+    
+	$VIRTUALB_HOME/${env}/bin/pip freeze
+
+}
+
 __install_deps () {
     # Lets be helpful and ask to install virtualenv if it's not installed.
     read -p "virtualenv is not installed. Would you like to install it now? [Y/n]" INSTALL
@@ -135,7 +145,7 @@ __install_deps () {
 
 
 __vb_completions() {
-    [[ $1 == "activate" || $1 == "rm" ]] && __virtualb_ls
+    [[ $1 == "activate" || $1 == "rm" || $1 == "freeze" ]] && __virtualb_ls
 }
 
 
@@ -147,7 +157,7 @@ _vb () {
 
   if [[ "${COMP_CWORD}" -eq 1 ]]; then
 
-    COMPREPLY=( $(compgen -W "activate deactivate ls new rm which" -- "$word") )
+    COMPREPLY=( $(compgen -W "activate deactivate freeze ls new rm which" -- "$word") )
 
   else
     local words=("${COMP_WORDS[@]}")
