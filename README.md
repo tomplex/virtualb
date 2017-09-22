@@ -29,7 +29,7 @@ vb rm some_other_virtualenv
 
 All virtualenvs are created in the location specified environment variable `VIRTUALB_HOME`. It defaults to `~/.virtualenvs`, but you can set this to whatever in your `.bashrc` file (no need to export).
 
-Additionally, all arguments passed to the `vb new` subcommand will be passed along to the `virtualenv` command.
+Additionally, all arguments passed to the `vb new` subcommand will be passed along to the `virtualenv` command, but they must come *after* the name of the virtualenv.
 
 ### Installation
 
