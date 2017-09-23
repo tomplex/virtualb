@@ -40,7 +40,8 @@ Currently, `virtualb` provides these commands:
 |`freeze`|list installed packages in currently activated or specified virtualenv| `vb freeze` or `vb freeze <virtualenv>`|
 |`help`|provide help for the given command|`vb help <command>`|
 |`ls`|list all virtualenvs by name|`vb ls`|
-|`new`|create a new virtualenv with the specified name|`vb new <virtualenv> [options]`| 
+|`new`|create a new virtualenv with the specified name|`vb new <virtualenv> [options]`|
+|`pwd`|show directory of active virtualenv|`vb pwd`|
 |`rm` | deletes the specified virtualenv| `vb rm <virtualenv>`|
 |`which`|shows the currently activated virtualenv|`vb which`|
 

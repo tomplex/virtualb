@@ -32,8 +32,8 @@ vb () {
     else
         echo "The subcommand ${cmd} is not defined."
     fi
-
 }
+
 
 __virtualb_help () {
     if [[ $# -eq 0 ]]; then
@@ -64,6 +64,7 @@ EOF
     fi
 }
 
+
 __virtualb_new () {
     ! type "virtualenv" > /dev/null && __install_deps
 
@@ -83,6 +84,7 @@ __virtualb_new () {
     fi
 }
 
+
 __virtualb_activate () {
     [[ $# -ne 1 ]] && echo "Must specify virtualenv name." 1>&2 && return 1
 
@@ -97,8 +99,8 @@ __virtualb_activate () {
     VIRTUAL_ENV=$virtualenv_path
 
     source $virtualenv_path/bin/activate
-
 }
+
 
 __virtualb_deactivate () {
     [[ -z ${VIRTUAL_ENV+x} ]] && echo "No virtualenv is active." 1>&2 && return 1
@@ -107,6 +109,7 @@ __virtualb_deactivate () {
     unset VIRTUAL_ENV VIRTUAL_ENV_NAME
 }
 
+
 __virtualb_ls () {
     if [[ -n ${VIRTUALB_HOME+x} ]]; then
         for d in $VIRTUALB_HOME/*; do
@@ -114,6 +117,7 @@ __virtualb_ls () {
         done
     fi
 }
+
 
 __virtualb_rm () {
     [[ $# -lt 1 ]] && echo "No virtualenv specified." 1>&2 && return 1
@@ -128,11 +132,13 @@ __virtualb_rm () {
     __confirm_remove $env_name && rm -rf ${env_path}
 }
 
+
 __virtualb_which () {
     [[ -z ${VIRTUAL_ENV+x} ]] && echo "No virtualenv is active." && return 0
 
     echo $VIRTUAL_ENV_NAME
 }
+
 
 __virtualb_freeze () {
     [[ -z ${VIRTUAL_ENV+x} && $# -lt 1 ]] && echo "No virtualenv specified or active." 1>&2 && return 1
@@ -140,16 +146,15 @@ __virtualb_freeze () {
     local env=${1:-${VIRTUAL_ENV_NAME}}
     
 	$VIRTUALB_HOME/${env}/bin/pip freeze
-
 }
 
-#__virtualb_test () {
-#    for f in $__virtualb_dir/docs/cmd_*; do
-#        local cmd="${f#*/cmd_}"
-#        echo $cmd
-#    done
-#    echo $__virtualb_dir
-#}
+
+__virtualb_pwd () {
+    [[ -z ${VIRTUAL_ENV+x} ]] && echo "No virtualenv is active." && return 0
+
+    echo $VIRTUAL_ENV
+}
+
 
 __install_deps () {
     local install
@@ -159,18 +164,20 @@ __install_deps () {
     [[ $install =~ [Yy] ]] && sudo pip install virtualenv
 }
 
+
 __confirm_remove () {
     local remove
     read -p "Are you sure you want to remove the virtualenv $1? " remove
 
     [[ $remove =~ [Yy] ]] && return 0 || return 1
-
 }
+
 
 __vb_completions() {
     [[ $1 == "activate" || $1 == "rm" || $1 == "freeze" ]] && __virtualb_ls
     [[ $1 == "help" ]] && __vb_all_cmds
 }
+
 
 __vb_all_cmds() {
     for f in $__virtualb_dir/docs/cmd_*; do
@@ -178,6 +185,7 @@ __vb_all_cmds() {
         echo $cmd
     done
 }
+
 
 _vb () {
 
