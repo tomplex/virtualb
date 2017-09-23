@@ -1,0 +1,10 @@
+Create a new virtualenv.
+
+Usage:
+    vb new <virtualenv> [OPTIONS]
+
+Create a new virtualenv with the specified name.
+Additional options are passed directly to the
+virtualenv command. Use virtualenv --help
+to get more information about these options.
+

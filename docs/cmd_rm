@@ -1,0 +1,7 @@
+Delete the specified virtualenv.
+
+Usage:
+    vb rm <virtualenv>
+
+Removes a virtualenv by name.
+

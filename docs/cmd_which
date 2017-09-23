@@ -1,0 +1,5 @@
+Show the name of the activated virtualenv.
+
+Usage:
+    vb which
+

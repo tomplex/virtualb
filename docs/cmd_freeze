@@ -1,0 +1,12 @@
+List the installed packages for a virtualenv.
+
+Usage:
+    vb freeze <virtualenv>
+    vb freeze
+
+Uses the virtualenv's pip freeze command to list
+all installed packages & versions. With no arguments
+and an active virtualenv, will use the currently
+activated virtualenv. The <virtualenv> argument
+will override one which is currently activated.
+

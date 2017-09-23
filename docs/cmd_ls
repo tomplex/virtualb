@@ -1,0 +1,7 @@
+List all virtualenvs by name.
+
+Usage:
+    vb ls
+
+Lists all virtualenvs in $VIRTUALB_HOME.
+

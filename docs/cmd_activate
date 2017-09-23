@@ -1,0 +1,9 @@
+Activate the specified virtualenv.
+
+Usage:
+    vb activate <virtualenv>
+
+Activates a virtualenv by name, using the virtualenv's
+built-in activate script. This will set the $VIRTUAL_ENV
+and $VIRTUAL_ENV_NAME variables.
+

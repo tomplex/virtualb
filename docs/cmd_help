@@ -1,0 +1,8 @@
+Shows usage information.
+
+Usage:
+    vb help
+    vb help <command>
+
+Provides help on usage for each subcommand.
+

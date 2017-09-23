@@ -1,0 +1,8 @@
+Deactivate the currently active environment.
+
+Usage:
+    vb deactivate
+
+Deactivates the currently active environment using
+virtualenv's built in deactivate function.
+
