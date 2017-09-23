@@ -11,9 +11,11 @@
 
 : ${VIRTUALB_HOME:=${HOME}/.virtualenvs}
 
+__virtualb_dir="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 
 vb () {
-    if [[ $# -eq 0 || $1 = --help || $1 == -h ]] ; then
+    if [[ $# -eq 0 || $1 = --help || $1 == -h || $1 == "-?" ]] ; then
 		vb help
 		return
 	fi
@@ -34,25 +36,32 @@ vb () {
 }
 
 __virtualb_help () {
-    cat << EOF
-vb - virtualb
-A wrapper for Python's virtualenv, based off of virtualz & virtualfish.
+    if [[ $# -eq 0 ]]; then
+        cat << EOF
+  Virtualb: A bash-based wrapper for Python's virtualenv.
 
-Usage:
+  Usage:
 
     vb <command> [OPTIONS]
 
-Available commands:
-
-    activate    -  Activate a virtualenv
-    deactivate  -  Deactivate the current virtualenv
-    freeze      -  List installed packages in current or specified virtualenv
-    ls          -  List all virtualenvs
-    new         -  Create a new virtualenv
-    rm          -  Remove a virtualenv
-    which       -  Show current virtualenv
+  Available commands:
 
 EOF
+
+        for file in ${__virtualb_dir}/docs/cmd_*; do
+            local cmd="${file#*/cmd_}"
+            printf "    %-14s - %s \n" "${cmd}" "$(head -n 1 $file)"
+        done
+        printf "\n"
+    elif [[ $# -eq 1 ]]; then
+        if [[ -r ${__virtualb_dir}/docs/cmd_$1 ]]; then
+            cat ${__virtualb_dir}/docs/cmd_$1
+        else
+            echo "No such command: $1" 1>&2
+            echo "use vb help for a list of commands." 1>&2
+            return 1
+        fi
+    fi
 }
 
 __virtualb_new () {
@@ -116,16 +125,14 @@ __virtualb_rm () {
 
     [[ ! -d ${env_path} ]] && echo "The virtualenv ${env_name} does not exist." 1>&2 && return 1
 
-    rm -rf ${env_path}
+    __confirm_remove $env_name && rm -rf ${env_path}
 }
-
 
 __virtualb_which () {
     [[ -z ${VIRTUAL_ENV+x} ]] && echo "No virtualenv is active." && return 0
 
     echo $VIRTUAL_ENV_NAME
 }
-
 
 __virtualb_freeze () {
     [[ -z ${VIRTUAL_ENV+x} && $# -lt 1 ]] && echo "No virtualenv specified or active." 1>&2 && return 1
@@ -136,36 +143,59 @@ __virtualb_freeze () {
 
 }
 
-__install_deps () {
-    # Lets be helpful and ask to install virtualenv if it's not installed.
-    read -p "virtualenv is not installed. Would you like to install it now? [Y/n]" INSTALL
+#__virtualb_test () {
+#    for f in $__virtualb_dir/docs/cmd_*; do
+#        local cmd="${f#*/cmd_}"
+#        echo $cmd
+#    done
+#    echo $__virtualb_dir
+#}
 
-    [[ $INSTALL =~ [Yy] ]] && sudo pip install virtualenv
+__install_deps () {
+    local install
+    # Lets be helpful and ask to install virtualenv if it's not installed.
+    read -p "virtualb requires virtualenv, and it is not installed. Would you like to install it now? [Y/n]" install
+
+    [[ $install =~ [Yy] ]] && sudo pip install virtualenv
 }
 
+__confirm_remove () {
+    local remove
+    read -p "Are you sure you want to remove the virtualenv $1? " remove
+
+    [[ $remove =~ [Yy] ]] && return 0 || return 1
+
+}
 
 __vb_completions() {
     [[ $1 == "activate" || $1 == "rm" || $1 == "freeze" ]] && __virtualb_ls
+    [[ $1 == "help" ]] && __vb_all_cmds
 }
 
+__vb_all_cmds() {
+    for f in $__virtualb_dir/docs/cmd_*; do
+        local cmd="${f#*/cmd_}"
+        echo $cmd
+    done
+}
 
 _vb () {
 
-  COMPREPLY=()
+    COMPREPLY=()
 
-  local word="${COMP_WORDS[COMP_CWORD]}"
+    local word="${COMP_WORDS[COMP_CWORD]}"
 
-  if [[ "${COMP_CWORD}" -eq 1 ]]; then
+    if [[ "${COMP_CWORD}" -eq 1 ]]; then
+        local cmds=$(__vb_all_cmds)
+        COMPREPLY=( $(compgen -W "$cmds" -- "$word") )
 
-    COMPREPLY=( $(compgen -W "activate deactivate freeze ls new rm which" -- "$word") )
-
-  else
-    local words=("${COMP_WORDS[@]}")
-    unset words[0]
-    unset words[$COMP_CWORD]
-    local completions=$(__vb_completions "${words[@]}")
-    COMPREPLY=( $(compgen -W "$completions" -- "$word") )
-  fi
+    else
+        local words=("${COMP_WORDS[@]}")
+        unset words[0]
+        unset words[$COMP_CWORD]
+        local completions=$(__vb_completions "${words[@]}")
+        COMPREPLY=( $(compgen -W "$completions" -- "$word") )
+    fi
 }
 
 
