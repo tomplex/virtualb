@@ -38,13 +38,13 @@ vb () {
 __virtualb_help () {
     if [[ $# -eq 0 ]]; then
         cat << EOF
-  Virtualb: A bash-based wrapper for Python's virtualenv.
+Virtualb: A bash-based wrapper for Python's virtualenv.
 
-  Usage:
+Usage:
 
     vb <command> [OPTIONS]
 
-  Available commands:
+Available commands:
 
 EOF
 
