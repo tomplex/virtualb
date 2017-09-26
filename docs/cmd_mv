@@ -1,0 +1,6 @@
+Rename a virtualenv. Aliased with 'rename'.
+
+Usage:
+    vb mv <current name> <new name>
+    vb rename <current name> <new name>
+
