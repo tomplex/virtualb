@@ -156,6 +156,33 @@ __virtualb_pwd () {
 }
 
 
+__virtualb_mv () {
+    local current_name=$1
+    local new_name=$2
+
+    [[ -z "$current_name" || -z "$new_name" ]] && echo "Must specify virtualenv to rename and the new name." 1>&2 && return 1
+
+    [[ ${VIRTUAL_ENV_NAME} == ${current_name} ]] && echo "Cannot rename virtualenv ${env_name} while it is in use." 1>&2 && return 1
+
+    __virtualenv_exists $current_name || echo "Virtualenv $current_name does not exist." 1>&2 && return 1
+
+    sed -i "s/$current_name/$new_name/g" ${VIRTUALB_HOME}/$current_name/bin/activate
+
+    mv $VIRTUALB_HOME/$current_name $VIRTUALB_HOME/$new_name
+}
+
+
+__virtualb_rename () {
+    __virtualb_mv "$@"
+
+}
+
+
+__virtualenv_exists () {
+    [[ -d "$VIRTUALB_HOME/$1" ]] || return 1
+}
+
+
 __install_deps () {
     local install
     # Lets be helpful and ask to install virtualenv if it's not installed.
@@ -169,12 +196,12 @@ __confirm_remove () {
     local remove
     read -p "Are you sure you want to remove the virtualenv $1? " remove
 
-    [[ $remove =~ [Yy] ]] && return 0 || return 1
+    [[ $remove =~ [Yy] ]] || return 1
 }
 
 
 __vb_completions() {
-    [[ $1 == "activate" || $1 == "rm" || $1 == "freeze" ]] && __virtualb_ls
+    [[ $1 == "activate" || $1 == "rm" || $1 == "freeze" || $1 == "mv" || $1 == "rename" ]] && __virtualb_ls
     [[ $1 == "help" ]] && __vb_all_cmds
 }
 
