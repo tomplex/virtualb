@@ -127,7 +127,10 @@ __virtualb_rm () {
 
     [[ ${VIRTUAL_ENV_NAME} == ${env_name} ]] && echo "Cannot remove virtualenv ${env_name} while it is in use." 1>&2 && return 1
 
-    [[ ! -d ${env_path} ]] && echo "The virtualenv ${env_name} does not exist." 1>&2 && return 1
+    if ! __virtualenv_exists ${VIRTUAL_ENV_NAME}; then
+        echo "The virtualenv ${env_name} does not exist." 1>&2
+        return 1
+    fi
 
     __confirm_remove $env_name && rm -rf ${env_path}
 }
@@ -164,17 +167,18 @@ __virtualb_mv () {
 
     [[ ${VIRTUAL_ENV_NAME} == ${current_name} ]] && echo "Cannot rename virtualenv ${env_name} while it is in use." 1>&2 && return 1
 
-    __virtualenv_exists $current_name || echo "Virtualenv $current_name does not exist." 1>&2 && return 1
+    if ! __virtualenv_exists ${current_name}; then
+        echo "The virtualenv ${current_name} does not exist." 1>&2
+        return 1
+    fi
 
     sed -i "s/$current_name/$new_name/g" ${VIRTUALB_HOME}/$current_name/bin/activate
-
     mv $VIRTUALB_HOME/$current_name $VIRTUALB_HOME/$new_name
 }
 
 
 __virtualb_rename () {
     __virtualb_mv "$@"
-
 }
 
 
