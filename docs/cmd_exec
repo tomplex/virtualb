@@ -1,0 +1,11 @@
+Run a command in the specified environment.
+
+Usage:
+    vb exec [env] [command]
+    vb exec [command]
+
+If a virtualenv is active and none is specified,
+the currently active virtualenv will be used.
+A specified environment will override the currently
+active one.
+
