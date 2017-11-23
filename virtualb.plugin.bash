@@ -30,7 +30,7 @@ vb () {
             "${func}" "$@"
         fi
     else
-        echo "The subcommand ${cmd} is not defined."
+        echo "The command ${cmd} is not defined."
     fi
 }
 
@@ -183,21 +183,30 @@ __virtualb_rename () {
 
 
 __virtualb_exec () {
-    local exec_env exec_cmd env_python
-    # vb exec [env] [command]
-    if [[ $# -eq 2 ]]; then
+    local exec_cmd exec_env env_python
+    # vb exec [-e env] command
+    if [[ $1 == "-e" || $1 == "--env" ]]; then
+        shift
         exec_env=$1
-        exec_cmd=$2
-        ! __virtualenv_exists $exec_env && echo "virtualenv $exec_env does not exist." 1>&2 && return 1
-    elif  __virtualenv_currently_active && [[ $# -eq 1 ]]; then
-        exec_env=$VIRTUAL_ENV_NAME
-        exec_cmd=$1
-    elif ! __virtualenv_currently_active && [[ $# -lt 2 ]]; then
+        shift
+
+    elif ! __virtualenv_currently_active; then
         echo "No virtualenv specified or active" 1>&2
         return 1
+
+    else
+        exec_env=$VIRTUAL_ENV_NAME
     fi
 
-    eval "$VIRTUALB_HOME/$exec_env/bin/python ${exec_cmd}"
+    ! __virtualenv_exists $exec_env && echo "virtualenv $exec_env does not exist." 1>&2 && return 1
+
+    exec_cmd=''
+    for i in "$@"; do
+        i=`printf "%s" "$i" | sed "s/'/'\"'\"'/g"`
+        exec_cmd="$exec_cmd '$i'"
+    done
+
+    eval "$VIRTUALB_HOME/$exec_env/bin/python" ${exec_cmd}
 
 }
 
@@ -227,8 +236,14 @@ __confirm_remove () {
 
 
 __vb_completions() {
-    [[ $1 == "activate" || $1 == "rm" || $1 == "freeze" || $1 == "mv" || $1 == "rename" || $1 == "exec" ]] && __virtualb_ls
+    local complete_virtualenv=( "activate" "rm" "freeze" "mv" "rename" "-e" "--env" )
+    # check if our command is one of the above; thanks to https://stackoverflow.com/a/15394738
+    [[ " ${complete_virtualenv[@]} " =~ " $1 " ]] && __virtualb_ls
+
     [[ $1 == "help" ]] && __vb_all_cmds
+
+    # let's be helpful and tab-complete the only argument that vb asks for
+    [[ $1 == "exec" ]] && echo "--env"
 }
 
 
