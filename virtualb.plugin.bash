@@ -30,7 +30,7 @@ vb () {
             "${func}" "$@"
         fi
     else
-        echo "The subcommand ${cmd} is not defined."
+        echo "The command ${cmd} is not defined."
     fi
 }
 
@@ -93,7 +93,7 @@ __virtualb_activate () {
 
     [[ ! -d $virtualenv_path ]] && echo "The virtualenv $virtualenv_name does not exist." 1>&2 && return 1
 
-    [[ -z ${VIRTUAL_ENV+x} ]] || __virtualb_deactivate
+    __virtualenv_currently_active && __virtualb_deactivate
 
     VIRTUAL_ENV_NAME=$virtualenv_name
     VIRTUAL_ENV=$virtualenv_path
@@ -103,7 +103,7 @@ __virtualb_activate () {
 
 
 __virtualb_deactivate () {
-    [[ -z ${VIRTUAL_ENV+x} ]] && echo "No virtualenv is active." 1>&2 && return 1
+    ! __virtualenv_currently_active && echo "No virtualenv is active." 1>&2 && return 1
 
     typeset -f "deactivate" > /dev/null && deactivate
     unset VIRTUAL_ENV VIRTUAL_ENV_NAME
@@ -137,14 +137,14 @@ __virtualb_rm () {
 
 
 __virtualb_which () {
-    [[ -z ${VIRTUAL_ENV+x} ]] && echo "No virtualenv is active." && return 0
+    ! __virtualenv_currently_active && echo "No virtualenv is active." && return 0
 
     echo $VIRTUAL_ENV_NAME
 }
 
 
 __virtualb_freeze () {
-    [[ -z ${VIRTUAL_ENV+x} && $# -lt 1 ]] && echo "No virtualenv specified or active." 1>&2 && return 1
+    ! __virtualenv_currently_active && [[ $# -lt 1 ]] && echo "No virtualenv specified or active." 1>&2 && return 1
     
     local env=${1:-${VIRTUAL_ENV_NAME}}
     
@@ -153,7 +153,7 @@ __virtualb_freeze () {
 
 
 __virtualb_pwd () {
-    [[ -z ${VIRTUAL_ENV+x} ]] && echo "No virtualenv is active." && return 0
+    ! __virtualenv_currently_active && echo "No virtualenv is active." && return 0
 
     echo $VIRTUAL_ENV
 }
@@ -165,7 +165,7 @@ __virtualb_mv () {
 
     [[ -z "$current_name" || -z "$new_name" ]] && echo "Must specify virtualenv to rename and the new name." 1>&2 && return 1
 
-    [[ ${VIRTUAL_ENV_NAME} == ${current_name} ]] && echo "Cannot rename virtualenv ${env_name} while it is in use." 1>&2 && return 1
+    [[ ${VIRTUAL_ENV_NAME} == ${current_name} ]] && echo "Cannot rename virtualenv ${current_name} while it is in use." 1>&2 && return 1
 
     if ! __virtualenv_exists ${current_name}; then
         echo "The virtualenv ${current_name} does not exist." 1>&2
@@ -182,10 +182,41 @@ __virtualb_rename () {
 }
 
 
-__virtualenv_exists () {
-    [[ -d "$VIRTUALB_HOME/$1" ]] || return 1
+__virtualb_exec () {
+    local exec_cmd exec_env env_python
+    # vb exec [-e env] command
+    if [[ $1 == "-e" || $1 == "--env" ]]; then
+        shift
+        exec_env=$1
+        shift
+
+    elif ! __virtualenv_currently_active; then
+        echo "No virtualenv specified or active" 1>&2
+        return 1
+
+    else
+        exec_env=$VIRTUAL_ENV_NAME
+    fi
+
+    ! __virtualenv_exists $exec_env && echo "virtualenv $exec_env does not exist." 1>&2 && return 1
+
+    exec_cmd=''
+    for i in "$@"; do
+        i=`printf "%s" "$i" | sed "s/'/'\"'\"'/g"`
+        exec_cmd="$exec_cmd '$i'"
+    done
+
+    eval "$VIRTUALB_HOME/$exec_env/bin/python" ${exec_cmd}
+
 }
 
+__virtualenv_exists () {
+    [[ -d "$VIRTUALB_HOME/$1" ]]
+}
+
+__virtualenv_currently_active() {
+    [[ -n ${VIRTUAL_ENV+x} ]]
+}
 
 __install_deps () {
     local install
@@ -205,8 +236,14 @@ __confirm_remove () {
 
 
 __vb_completions() {
-    [[ $1 == "activate" || $1 == "rm" || $1 == "freeze" || $1 == "mv" || $1 == "rename" ]] && __virtualb_ls
+    local complete_virtualenv=( "activate" "rm" "freeze" "mv" "rename" "-e" "--env" )
+    # check if our command is one of the above; thanks to https://stackoverflow.com/a/15394738
+    [[ " ${complete_virtualenv[@]} " =~ " $1 " ]] && __virtualb_ls
+
     [[ $1 == "help" ]] && __vb_all_cmds
+
+    # let's be helpful and tab-complete the only argument that vb asks for
+    [[ $1 == "exec" ]] && echo "--env"
 }
 
 
@@ -229,9 +266,8 @@ _vb () {
         COMPREPLY=( $(compgen -W "$cmds" -- "$word") )
 
     else
-        local words=("${COMP_WORDS[@]}")
-        unset words[0]
-        unset words[$COMP_CWORD]
+        # progressively shift the array to the left, removing all entered words except the most recent
+        local words=("${COMP_WORDS[@]:$(($COMP_CWORD - 1))}")
         local completions=$(__vb_completions "${words[@]}")
         COMPREPLY=( $(compgen -W "$completions" -- "$word") )
     fi

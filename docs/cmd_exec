@@ -1,0 +1,21 @@
+Pass a command to the specified or currently active
+environment. Equivalent to running `python <command>`
+
+Usage:
+    vb exec [-e/--env virtualenv] <command>
+
+
+If a virtualenv is active and none is specified,
+the currently active virtualenv will be used. A
+specified environment will override the currently
+active one.
+
+Use proper quoting within the command you're passing
+to the Python executable, but don't worry about wrapping
+the command itself in quotes; i.e.
+
+echo '{"hello":"world"}' | vb exec -e my_env -c "import sys, json; j = json.load(sys.stdin); print(j['hello'])"
+
+Everything after the -e my_env will be passed to the Python
+executable with quoting preserved.
+
