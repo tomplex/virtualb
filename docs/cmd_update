@@ -1,0 +1,8 @@
+Update virtualb.
+
+Usage:
+    vb update
+
+Pulls from the git master to bring virtualb
+up-to-date with the origin.
+

@@ -1,7 +1,9 @@
 Delete the specified virtualenv.
 
 Usage:
-    vb rm <virtualenv>
+    vb rm [-y] <virtualenv>
 
-Removes a virtualenv by name.
+Removes a virtualenv by name, with confirmation.
+If the -y flag is used, then it will bypass the
+confirmation.
 

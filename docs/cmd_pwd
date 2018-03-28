@@ -1,5 +1,9 @@
-Shows the directory of active virtualenv.
+Shows the directory of active or specified virtualenv.
 
 Usage:
-    vb pwd
+    vb pwd [<virtualenv>]
+
+Shows the directory of the currently active virtualenv.
+If a virtualenv is specified, then it will override the
+currently active one.
 

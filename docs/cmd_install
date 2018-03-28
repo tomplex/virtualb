@@ -1,0 +1,9 @@
+Install a package in environment.
+
+Usage:
+    vb install <virtualenv>...<virtualenv> [package_name OR requirements_file]
+
+Install a single package OR the contents of a
+requirements file in one or multiple environments.
+No need to include -r if specifying a requirements file.
+
