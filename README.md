@@ -18,7 +18,7 @@ vb new some_virtualenv          # defaults to system python
 which python
 vb which                        # show virtualenv name
  
-vb new some_other_virtualenv -p python3.6  # can specify python to use
+vb new some_other_virtualenv -p python3.6 -r requirements.txt # can specify python to use & requirements file
 which python
 vb which
  
@@ -47,14 +47,21 @@ Currently, `virtualb` provides these commands:
 |`exec`|execute a command in the specified virtualenv|`vb exec [-e env] <command>`|
 |`freeze`|list installed packages in currently activated or specified virtualenv| `vb freeze` or `vb freeze <virtualenv>`|
 |`help`|provide help for the given command|`vb help <command>`|
+|`install`|install a package or requirements file in the specified virtualenv(s)|`vb install <virtualenv>...<virtualenv> [package_name OR requirements_file]`|
 |`ls`|list all virtualenvs by name|`vb ls`|
 |`mv` / `rename`|rename virtualenv |`vb mv <some virtualenv> <a new name>`|
 |`new`|create a new virtualenv with the specified name|`vb new <virtualenv> [options]`|
 |`pwd`|show directory of active virtualenv|`vb pwd`|
+|`requires`|Create a `requirements.txt` file for the specified or current virtualenv.|`vb requires [virtualenv] [file name]`|
 |`rm` | deletes the specified virtualenv| `vb rm <virtualenv>`|
+|`update`|update `virtualb`.|`vb update`|
 |`which`|shows the currently activated virtualenv|`vb which`|
 
 Additionally, all arguments to the `vb new` subcommand will be passed along to the `virtualenv` command, but they must come *after* the name of the virtualenv.
+
+Environment variables:
+ - `VIRTUALB_HOME`: Directory to store all virtualenvs
+ - `VIRTUALB_DEFAULT_PYTHON`: The `python` installation which should be used as the default when creating virtualenvs. Otherwise, `vb` will use `$(which python)`, unless otherwise specified.
 
 ### Installation
 
@@ -64,6 +71,4 @@ Manual installation is straightforward; just clone the repo wherever you want an
 git clone https://github.com/tomplex/virtualb.git ~/.bash_plugins/virtualb
 echo "source $HOME/.bash_plugins/virtualb/virtualb.plugin.bash" >> ~/.bashrc
 ```
-
-I haven't yet figured out how integrate with a plugin manager like [bash-it](https://github.com/Bash-it/bash-it). Will update once I get that set up.
 

@@ -1,7 +1,7 @@
 Create a requirements.txt file for a virtualenv.
 
 Usage:
-    vb requires <virtualenv=current> [file name=requirements.txt]
+    vb requires [virtualenv=current] [file name=requirements.txt]
 
 Create a requirements.txt file for the current
 or specified environment, using the specified
