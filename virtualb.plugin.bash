@@ -9,8 +9,8 @@
 # virtualb was heavily inspired by virtualz, a virtualenv manager for zsh: https://github.com/aperezdc/virtualz
 #
 
-: ${VIRTUALB_HOME:=${HOME}/.virtualenvs}
-: ${VIRTUALB_DEFAULT_PYTHON:=$(which python)}
+VIRTUALB_HOME=${VIRTUALB_HOME:-$HOME/.virtualenvs}
+VIRTUALB_DEFAULT_PYTHON=${VIRTUALB_DEFAULT_PYTHON:-$(which python3)}
 
 __virtualb_dir="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -70,32 +70,32 @@ EOF
 
 __virtualb_new () {
     # Create a new virtualenv.
-    ! type "virtualenv" > /dev/null && __install_deps
 
     [[ $# -lt 1 ]] && echo "Must specify virtualenv name." 1>&2 && return 1
 
     local virtualenv_name=$1
     local virtualenv_path=${VIRTUALB_HOME}/${virtualenv_name}
-    local requirements_file
-    local -a args
     shift
 
     # Thanks to https://unix.stackexchange.com/a/258514/214736
     for arg do
+      echo $arg
         shift
-        if [[ "$arg" = "-r" ]]; then
+        if [[ "$arg" == "-r" ]]; then
             requirements_file=$1
-        else
-            # otherwise, keep the argument (if it's not the one we found above)
-            [[ "$arg" != "$requirements_file" ]] && args+=("$arg")
+            shift
+        elif [[ "$arg" == "-p" ]]; then
+            python_executable=$1
+            shift
         fi
     done
 
-    if [[ "${args[@]}" = "${args/-p}" ]]; then
-        virtualenv "${args[@]}" -p $VIRTUALB_DEFAULT_PYTHON "${virtualenv_path}"
-    else
-        virtualenv "${args[@]}" "${virtualenv_path}"
+    if [[ -z "${python_executable}" ]]; then
+      # If the user didn't specify a python version to use, use the default.
+      python_executable=$VIRTUALB_DEFAULT_PYTHON
     fi
+
+    $python_executable -m venv "${virtualenv_path}"
 
     local virtualenv_status=$?
 
@@ -105,15 +105,24 @@ __virtualb_new () {
         echo "Error when creating virtualenv" 1>&2 && return $virtualenv_status
     fi
 
-    [[ -n ${requirements_file+x} ]] && pip install -r $requirements_file || return 0
+    if [[ -n "${requirements_file}" ]]; then
+      pip install -r $requirements_file
+    fi
+
+    return $?
 }
 
 
 __virtualb_activate () {
     # Activate the specified virtualenv.
-    [[ $# -ne 1 ]] && echo "Must specify virtualenv name." 1>&2 && return 1
+    local virtualenv_name
 
-    local virtualenv_name=$1
+    if [[ $# -ne 1 ]]; then
+          virtualenv_name=$(basename "$PWD")
+    else
+          virtualenv_name=$1
+    fi
+
     local virtualenv_path=$VIRTUALB_HOME/${virtualenv_name}
 
     ! __virtualenv_exists $virtualenv_name && echo "The virtualenv $virtualenv_name does not exist." 1>&2 && return 1
@@ -139,8 +148,8 @@ __virtualb_deactivate () {
 __virtualb_ls () {
     # Print the names of all virtualenvs to stdout.
     if [[ -n ${VIRTUALB_HOME+x} ]]; then
-        for d in $VIRTUALB_HOME/*; do
-            echo $(basename $d)
+        for directory in $VIRTUALB_HOME/*; do
+            echo $(basename $directory)
         done
     fi
 }
@@ -324,15 +333,6 @@ __virtualenv_exists () {
 __virtualenv_currently_active() {
     # Helper function to see if any virtualenv is currently active.
     [[ -n ${VIRTUAL_ENV+x} ]]
-}
-
-
-__install_deps () {
-    local install
-    # Lets be helpful and ask to install virtualenv if it's not installed.
-    read -p "virtualb requires virtualenv, and it is not installed. Would you like to install it now? [Y/n]" install
-
-    [[ $install =~ [Yy] ]] && pip install virtualenv
 }
 
 

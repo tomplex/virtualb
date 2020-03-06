@@ -39,7 +39,7 @@ vb rm some_virtualenv           # removes virtualenv
 vb rm some_other_virtualenv
 ```
 
-All virtualenvs are created in the location specified environment variable `VIRTUALB_HOME`. It defaults to `~/.virtualenvs`, but you can set this to whatever in your `.bashrc` file (no need to export).
+All virtualenvs are created in the location specified environment variable `VIRTUALB_HOME`. It defaults to `~/.virtualenvs`, but you can set this to whatever in your `.bashrc`/`.bash_profile` file (no need to export).
 
 Subcommands will autocomplete in the prompt, as will subcommands referencing virtualenvs, like `activate`, `freeze` and `rm`.
 

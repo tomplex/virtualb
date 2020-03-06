@@ -4,20 +4,20 @@ Usage:
     vb new <virtualenv> [OPTIONS]
 
 Options:
-    -p python_executable  Executable to use.
-    -r requirements file  Specify a requirements file of dependencies to install.
-    -v, --verbose         Increase verbosity.
-    -q, --quiet           Decrease verbosity.
+    -p python_executable  Executable to use. Defaults to $(which python3).
+    -r requirements_file  Specify a requirements file of dependencies to install.
 
 Create a new virtualenv with the specified name.
+
+Setting -p /path/to/python or -p python3.6 will
+specify a Python executable to use; otherwise
+it will default to the value of $(which python3).
+
+Setting -r allows you to specify a requirements
+file of packages to install after creating the
+environment.
+
 The default python used by virtualb can be specified
-by setting the $VIRTUALB_DEFAULT_PYTHON, otherwise
-the system default will be used.
-
-You can use -r to also specify a requirements
-file of packages to install after creating the environment.
-
-Most options will be passed directly to virtualenv,
-se virtualenv --help to get more information
-about other available options.
+by setting the $VIRTUALB_DEFAULT_PYTHON environment
+variable.
 
