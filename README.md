@@ -6,7 +6,12 @@ A bash wrapper around Python's `virtualenv` tool. Inspired by [virtualz](https:/
 
 ```bash
 git clone https://github.com/tomplex/virtualb.git ~/.bash_plugins/virtualb
+
+# On Linux
 echo "source $HOME/.bash_plugins/virtualb/virtualb.plugin.bash" >> ~/.bashrc
+
+# On MacOS
+echo "source $HOME/.bash_plugins/virtualb/virtualb.plugin.bash" >> ~/.bash_profile
 ```
 
 ### Usage
